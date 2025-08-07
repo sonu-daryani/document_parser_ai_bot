@@ -156,12 +156,14 @@ def search_similar_chunks(query, index, embeddings, metadata_list, k=5):
     results = []
     for i, (score, idx) in enumerate(zip(scores[0], indices[0])):
         if idx < len(metadata_list):
+            meta = metadata_list[idx]
+            # Defensive: ensure 'metadata' key exists
+            metadata = meta.get('metadata', {}) if isinstance(meta, dict) else {}
             results.append({
-                'text': metadata_list[idx]['text'],
-                'metadata': metadata_list[idx]['metadata'],
+                'text': meta.get('text', ''),
+                'metadata': metadata,
                 'score': float(score)
             })
-    
     return results
 
 
@@ -310,13 +312,14 @@ Answer:"""
 
         answer = response.choices[0].message.content
 
-        # Prepare source information
+        # Prepare source information (flattened, robust)
         sources = []
         for chunk in relevant_chunks:
+            meta = chunk.get('metadata', {})
             source_info = {
-                'filename': chunk['metadata']['metadata']['filename'],
-                'chunk_index': chunk['metadata']['metadata']['chunk_index'],
-                'score': chunk['score']
+                'filename': meta.get('filename', ''),
+                'chunk_index': meta.get('chunk_index', None),
+                'score': chunk.get('score', 0)
             }
             if source_info not in sources:
                 sources.append(source_info)

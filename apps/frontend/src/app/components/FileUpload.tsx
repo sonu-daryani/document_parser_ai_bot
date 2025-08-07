@@ -83,7 +83,7 @@ export default function FileUpload({setIsUploading}: {setIsUploading?: React.Dis
         if (response.data.user_id) {
           localStorage.setItem('user_id', response.data.user_id);
         }
-        setUploadedFiles((old) => [...old, ...response.data.documents]);
+        setUploadedFiles((old) => [...old, ...response.data.files]);
         uploadingSetter(false);
         toast.success('Files uploaded successfully');
       } catch (error) {

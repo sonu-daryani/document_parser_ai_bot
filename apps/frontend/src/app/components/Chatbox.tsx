@@ -1,8 +1,12 @@
-import React, { useState } from "react";
 
-type ChatboxProps = {  
+type ChatboxProps = {
   isUploading: boolean;
   className?: string;
+};
+
+type Message = {
+  text: string;
+  isUser: boolean;
 };
 
 type ChatMessageProps = {
@@ -13,6 +17,7 @@ type ChatMessageProps = {
 };
 
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 // Circular loader component with Tailwind
 const CircularLoader = () => {
@@ -81,33 +86,50 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ text, isUser, image, isLoadin
   );
 };
 
+
 const Chatbox = ({ isUploading, className }: ChatboxProps) => {
-  const [chatbotResponse, setChatbotResponse] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState("");
-  const [userMessage, setUserMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // You may want to get user_id from context or props in a real app
   const user_id = localStorage.getItem('user_id') || 'xyz123';
 
+  // Load messages from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('chat_conversation');
+    if (stored) {
+      try {
+        setMessages(JSON.parse(stored));
+      } catch {
+        setMessages([]);
+      }
+    }
+  }, []);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('chat_conversation', JSON.stringify(messages));
+  }, [messages]);
+
   const handleUserInput = async () => {
     if (!userInput.trim()) return;
-    setChatbotResponse("");
-    setUserMessage(userInput);
+    const userMsg: Message = { text: userInput, isUser: true };
+    setMessages((prev: Message[]) => [...prev, userMsg]);
     setIsLoading(true);
+    setUserInput("");
     try {
       const response = await axios.post('/api/chat', {
         query: userInput,
         user_id: user_id
       });
-      setChatbotResponse(response.data.answer);
-      setIsLoading(false);
+      const botMsg: Message = { text: response.data.answer, isUser: false };
+      setMessages((prev: Message[]) => [...prev, botMsg]);
     } catch (error) {
       console.error(error);
-      setChatbotResponse("Something went wrong!");
-      setIsLoading(false);
+      setMessages((prev: Message[]) => [...prev, { text: "Something went wrong!", isUser: false }]);
     }
-    setUserInput("");
+    setIsLoading(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -125,29 +147,21 @@ const Chatbox = ({ isUploading, className }: ChatboxProps) => {
       {isUploading ? (
         <CircularLoader />
       ) : (
-        <div className="flex flex-col h-96">
+        <div className="flex flex-col overflow-y-auto h-screen max-h-96">
           {/* Chat Messages Area */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            {!userMessage && !chatbotResponse && (
+            {messages.length === 0 && !isLoading && (
               <div className="text-center text-gray-500 py-8">
                 <p>Ask a question about your uploaded PDF document</p>
               </div>
             )}
-            
-            {userMessage && (
-              <ChatMessage text={userMessage} isUser={true} image="" />
-            )}
-            
-            {(chatbotResponse || isLoading) && (
-              <ChatMessage 
-                text={chatbotResponse} 
-                isUser={false} 
-                image="" 
-                isLoading={isLoading && !chatbotResponse}
-              />
+            {messages.map((msg: Message, idx: number) => (
+              <ChatMessage key={idx} text={msg.text} isUser={msg.isUser} image="" />
+            ))}
+            {isLoading && (
+              <ChatMessage text="" isUser={false} image="" isLoading={true} />
             )}
           </div>
-          
           {/* Input Area */}
           <div className="border-t border-gray-200 p-4">
             <div className="flex gap-3">
