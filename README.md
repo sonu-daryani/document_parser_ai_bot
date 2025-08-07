@@ -1,6 +1,5 @@
-# ChatbotMonorepo
-
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+# DOCUMENT PARSER AI BOT
+<img width="1727" height="998" alt="Screenshot 2025-08-07 at 3 16 10 PM" src="https://github.com/user-attachments/assets/14cfffa9-81a6-4996-a1c7-baab9b11dabf" />
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
 
