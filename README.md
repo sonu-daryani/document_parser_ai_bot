@@ -1,6 +1,5 @@
 # DOCUMENT PARSER AI BOT
-
-A full-stack AI-powered chatbot that allows users to upload PDF and document files, parses and indexes their content, and enables conversational Q&A over the uploaded documents using OpenAI and vector search.
+- A full-stack AI-powered chatbot that allows users to upload PDF and document files, parses and indexes their content, and enables conversational Q&A over the uploaded documents using OpenAI and vector search.
 ---
 
 
