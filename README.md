@@ -24,7 +24,7 @@
 
 ```sh
 git clone <your-repo-url>
-cd chatbot-monorepo
+cd document_parser_ai_bot
 ```
 
 ### 2. Backend Setup
