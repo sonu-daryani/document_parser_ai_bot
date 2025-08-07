@@ -1,81 +1,108 @@
 # DOCUMENT PARSER AI BOT
-<img width="1727" height="998" alt="Screenshot 2025-08-07 at 3 16 10 PM" src="https://github.com/user-attachments/assets/14cfffa9-81a6-4996-a1c7-baab9b11dabf" />
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+<img width="600" alt="Screenshot" src="https://github.com/user-attachments/assets/14cfffa9-81a6-4996-a1c7-baab9b11dabf" />
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+A full-stack AI-powered chatbot that allows users to upload PDF and document files, parses and indexes their content, and enables conversational Q&A over the uploaded documents using OpenAI and vector search.
 
-## Finish your CI setup
+---
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/p0bG0y1bqX)
+## Features
 
+- Upload PDF, DOCX, and TXT files via a modern web UI
+- Automatic text extraction and chunking
+- Embedding and vector search using FAISS and Sentence Transformers
+- Conversational chat interface with persistent history (localStorage)
+- Backend powered by Flask, OpenAI, and Python
+- Nx monorepo for unified frontend and backend development
 
-## Run tasks
+---
 
-To run the dev server for your app, use:
+## Quick Start
 
-```sh
-npx nx serve pdf_parser_aichatbot
-```
-
-To create a production bundle:
-
-```sh
-npx nx build pdf_parser_aichatbot
-```
-
-To see all available targets to run for a project, run:
+### 1. Clone the repository
 
 ```sh
-npx nx show project pdf_parser_aichatbot
+git clone <your-repo-url>
+cd chatbot-monorepo
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### 2. Backend Setup
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
+- Python 3.9+ required
+- Install dependencies (recommended: [uv](https://github.com/astral-sh/uv)):
 
 ```sh
-npx nx g @nx/react:app demo
+cd apps/backend
+uv pip install -r requirements.txt
 ```
 
-To generate a new library, use:
+- Create a `.env` file in `apps/backend` and add your OpenAI API key:
+
+```
+OPENAI_API_KEY=your-key-here
+```
+
+- Start the backend:
 
 ```sh
-npx nx g @nx/react:lib mylib
+python3 app.py
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### 3. Frontend Setup
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Node.js 18+ recommended
+- Install dependencies:
 
+```sh
+npm install
+```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- Start the frontend (from the root):
 
-## Install Nx Console
+```sh
+npx nx serve frontend
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+The frontend will be available at [http://localhost:4200](http://localhost:4200).
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Useful links
+## Usage
 
-Learn more:
+1. Upload your PDF or document files using the web UI.
+2. Ask questions about the content in the chat interface.
+3. The conversation is stored in your browser and will persist after reloads.
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Project Structure
+
+- `apps/backend/` — Flask API, file uploads, vector DB, OpenAI integration
+- `apps/frontend/` — React + Vite web app, chat UI, file upload UI
+- `uploads/` — Uploaded files (gitignored)
+- `vector_db/` — FAISS indices and metadata (gitignored)
+
+---
+
+## Development
+
+- To run both frontend and backend together:
+
+```sh
+npm run dev
+```
+
+- To build for production, use Nx build commands.
+
+---
+
+## Troubleshooting
+
+- If you see `ModuleNotFoundError`, ensure dependencies are installed for the correct Python version.
+- For FAISS or Flask errors, try reinstalling dependencies.
+- On macOS, if you see PATH warnings, add this to your shell profile:
+  ```sh
+  export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+  ```
+
+---
