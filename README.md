@@ -1,8 +1,10 @@
 # DOCUMENT PARSER AI BOT
 
-<img width="600" alt="Screenshot" src="https://github.com/user-attachments/assets/14cfffa9-81a6-4996-a1c7-baab9b11dabf" />
-
 A full-stack AI-powered chatbot that allows users to upload PDF and document files, parses and indexes their content, and enables conversational Q&A over the uploaded documents using OpenAI and vector search.
+---
+
+
+<img width="600" alt="Screenshot" src="https://github.com/user-attachments/assets/14cfffa9-81a6-4996-a1c7-baab9b11dabf" />
 
 ---
 
