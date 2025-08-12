@@ -147,7 +147,7 @@ const Chatbox = ({ isUploading, className }: ChatboxProps) => {
       {isUploading ? (
         <CircularLoader />
       ) : (
-        <div className="flex flex-col overflow-y-auto h-screen max-h-96">
+        <div className="flex flex-col overflow-y-auto h-screen max-h-[80vh]">
           {/* Chat Messages Area */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.length === 0 && !isLoading && (
