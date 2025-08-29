@@ -2,6 +2,10 @@ import { StrictMode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
 import App from './app/app';
+import { api } from './app/lib/api';
+
+// Initialize API defaults once (optional import side-effect)
+void api;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

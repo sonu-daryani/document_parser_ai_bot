@@ -16,7 +16,7 @@ type ChatMessageProps = {
   isLoading?: boolean;
 };
 
-import axios from 'axios';
+import { api } from '../../app/lib/api';
 import { useEffect, useState } from 'react';
 
 // Circular loader component with Tailwind
@@ -92,24 +92,25 @@ const Chatbox = ({ isUploading, className }: ChatboxProps) => {
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // You may want to get user_id from context or props in a real app
-  const user_id = localStorage.getItem('user_id') || 'xyz123';
+  // messages are per user cookie on the backend; we'll also hydrate from server history
 
-  // Load messages from localStorage on mount
+  // Load messages from server history on mount
   useEffect(() => {
-    const stored = localStorage.getItem('chat_conversation');
-    if (stored) {
+    (async () => {
       try {
-        setMessages(JSON.parse(stored));
-      } catch {
-        setMessages([]);
-      }
-    }
+        const res = await api.get('/api/history');
+        const history = (res.data?.history || []).map((h: any) => [
+          { text: h.query, isUser: true },
+          { text: h.answer, isUser: false },
+        ]).flat();
+        if (history.length) setMessages(history);
+      } catch {}
+    })();
   }, []);
 
-  // Save messages to localStorage whenever they change
+  // Optionally mirror to localStorage for quick reload UX
   useEffect(() => {
-    localStorage.setItem('chat_conversation', JSON.stringify(messages));
+    try { localStorage.setItem('chat_conversation', JSON.stringify(messages)); } catch {}
   }, [messages]);
 
   const handleUserInput = async () => {
@@ -119,10 +120,7 @@ const Chatbox = ({ isUploading, className }: ChatboxProps) => {
     setIsLoading(true);
     setUserInput("");
     try {
-      const response = await axios.post('/api/chat', {
-        query: userInput,
-        user_id: user_id
-      });
+      const response = await api.post('/api/chat', { query: userInput });
       const botMsg: Message = { text: response.data.answer, isUser: false };
       setMessages((prev: Message[]) => [...prev, botMsg]);
     } catch (error) {

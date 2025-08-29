@@ -20,7 +20,7 @@ const toast = {
 };
 
 
-import axios from 'axios';
+import { api } from '../../app/lib/api';
 
 export default function FileUpload({setIsUploading}: {setIsUploading?: React.Dispatch<React.SetStateAction<boolean>>}) {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -39,22 +39,22 @@ export default function FileUpload({setIsUploading}: {setIsUploading?: React.Dis
         }
     };
 
-    // You may want to get user_id from context or props in a real app
-    const user_id = localStorage.getItem('user_id') || 'xyz123';
+    // user_id comes from cookie; backend reads it. Keep local for display only if needed
+    const [userId, setUserId] = useState<string | null>(null);
     // Fetch uploaded files from backend
     useEffect(() => {
-      if (!user_id) return;
-      axios.get(`/api/documents/${user_id}`)
+      api.get(`/api/auth/ensure`).then((r) => setUserId(r.data?.user_id)).catch(() => {});
+      api.get(`/api/documents`)
         .then(res => {
           setUploadedFiles(res.data.documents || []);
         })
         .catch(() => setUploadedFiles([]));
-    }, [user_id]);
+    }, []);
 
     const handleDelete = async (file_id: string) => {
       uploadingSetter(true);
       try {
-        await axios.delete(`/api/documents/${user_id}/${file_id}`);
+        await api.delete(`/api/documents/${file_id}`);
         setUploadedFiles((old) => old.filter((file) => file.file_id !== file_id));
         uploadingSetter(false);
         toast.success('File deleted successfully');
@@ -72,17 +72,14 @@ export default function FileUpload({setIsUploading}: {setIsUploading?: React.Dis
       for (let i = 0; i < selectedFiles.length; i++) {
         formData.append('files', selectedFiles[i] as any);
       }
-      formData.append('user_id', user_id);
+      // user_id is taken from cookie on the server side
       try {
-        const response = await axios.post('/api/upload', formData, {
+        const response = await api.post('/api/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        // Save user_id for future requests
-        if (response.data.user_id) {
-          localStorage.setItem('user_id', response.data.user_id);
-        }
+        if (response.data.user_id) setUserId(response.data.user_id);
         setUploadedFiles((old) => [...old, ...response.data.files]);
         uploadingSetter(false);
         toast.success('Files uploaded successfully');
